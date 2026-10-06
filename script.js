@@ -739,7 +739,7 @@ window.celebrateJoke = function (type) {
     }
 };
 
-// --- 7. Act 4: Infinite Reels Gallery (Photos & Videos) ---
+// --- 7. Act 4: Infinite Reels Gallery (Photos) ---
 function initMediaGallery() {
     const galleryGrid = document.getElementById('media-gallery-grid');
     const filterTabs = document.querySelectorAll('.gallery-filter-tab');
@@ -747,9 +747,8 @@ function initMediaGallery() {
 
     let currentFilter = 'all';
 
-    // Combine all media
+    // Combine photos only (videos removed from Act IV gallery)
     const allItems = [
-        ...coupleVideos.map(v => ({ ...v, type: 'video' })),
         ...couplePhotos.map(p => ({ ...p, type: 'photo' })),
         ...rubinaPortraits.map(r => ({ ...r, type: 'candid' }))
     ];
@@ -759,7 +758,6 @@ function initMediaGallery() {
         const filtered = allItems.filter(item => {
             if (currentFilter === 'all') return true;
             if (currentFilter === 'couple') return item.type === 'photo';
-            if (currentFilter === 'video') return item.type === 'video';
             if (currentFilter === 'candid') return item.type === 'candid';
             return true;
         });
@@ -768,37 +766,17 @@ function initMediaGallery() {
             const card = document.createElement('div');
             card.className = 'group relative rounded-2xl overflow-hidden glass-panel border border-rose-900/40 cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-champagne/60';
 
-            if (item.type === 'video') {
-                card.innerHTML = `
-                    <div class="aspect-[4/5] bg-black/80 relative flex items-center justify-center overflow-hidden">
-                        <video src="${item.src}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
-                        <div class="absolute inset-0 bg-gradient-to-t from-burgundy-dark via-transparent to-black/30"></div>
-                        <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-champagne border border-champagne/40 backdrop-blur-md">
-                            <i class="fas fa-video mr-1"></i> Reel
-                        </div>
-                        <div class="w-12 h-12 rounded-full bg-champagne text-burgundy-dark flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110">
-                            <i class="fas fa-play ml-1"></i>
-                        </div>
-                        <div class="absolute bottom-3 left-3 right-3">
-                            <p class="text-sm font-semibold text-white drop-shadow">${item.title}</p>
-                            <p class="text-xs text-rose-300 font-mono">Prakash & Rubina</p>
-                        </div>
+            card.innerHTML = `
+                <div class="aspect-[4/5] bg-burgundy-dark/50 relative overflow-hidden">
+                    <img src="${item.src}" alt="${item.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-burgundy-dark via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    <div class="absolute bottom-3 left-3 right-3">
+                        <p class="text-sm font-semibold text-rose-100 drop-shadow">${item.title}</p>
+                        <p class="text-xs text-champagne font-handwritten text-lg">${item.type === 'candid' ? 'Birthday Queen ✨' : 'Forever Moments 💕'}</p>
                     </div>
-                `;
-                card.addEventListener('click', () => openVideoModal(item.src, item.title));
-            } else {
-                card.innerHTML = `
-                    <div class="aspect-[4/5] bg-burgundy-dark/50 relative overflow-hidden">
-                        <img src="${item.src}" alt="${item.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-burgundy-dark via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-                        <div class="absolute bottom-3 left-3 right-3">
-                            <p class="text-sm font-semibold text-rose-100 drop-shadow">${item.title}</p>
-                            <p class="text-xs text-champagne font-handwritten text-lg">${item.type === 'candid' ? 'Birthday Queen ✨' : 'Forever Moments 💕'}</p>
-                        </div>
-                    </div>
-                `;
-                card.addEventListener('click', () => openImageModal(item.src, item.title));
-            }
+                </div>
+            `;
+            card.addEventListener('click', () => openImageModal(item.src, item.title));
 
             galleryGrid.appendChild(card);
         });
